@@ -1,7 +1,5 @@
 <?php
 
-use Psr\Http\Message\ResponseInterface;
-
 return [
 
     'consumer_key' => '',
@@ -16,15 +14,8 @@ return [
 
     'realm_id' => '',
 
-    'parser' => function (ResponseInterface $response) {
-        $xml = simplexml_load_string((string)$response->getBody());
-        return json_decode(json_encode($xml), TRUE);
-    },
+    'parser' => \KevinEm\QuickBooks\Laravel\ResponseParser::class,
 
-    'token_resolver' => function () {
-        return [
-            'access_token' => '',
-            'access_token_secret' => ''
-        ];
-    }
+    'token_resolver' => \KevinEm\QuickBooks\Laravel\TokenResolver::class
+
 ];

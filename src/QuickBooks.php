@@ -62,8 +62,8 @@ class QuickBooks
     {
         $this->client = $client;
         $this->config = $config;
-        $this->parser = $config['parser'];
-        $this->tokenResolver = $config['token_resolver'];
+        $this->parser = new $config['parser'];
+        $this->tokenResolver = new $config['token_resolver'];
         $this->intuit = $intuit;
         $this->env = $config['env'];
     }
@@ -73,7 +73,7 @@ class QuickBooks
      */
     protected function resolveToken()
     {
-        $token = call_user_func([$this->tokenResolver, '__invoke']);
+        $token = $this->tokenResolver->resolve();
         $tokenCredentials = new TokenCredentials();
         $tokenCredentials->setIdentifier($token['access_token']);
         $tokenCredentials->setSecret($token['access_token_secret']);
@@ -149,7 +149,7 @@ class QuickBooks
             throw new QuickBooksException("Received error [$body] with status code [$statusCode].", $statusCode);
         }
 
-        return call_user_func([$this->parser, '__invoke'], $response);
+        return $this->parser->parse($response);
     }
 
     /**
